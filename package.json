@@ -1,0 +1,23 @@
+{
+  "name": "node_task_1",
+  "version": "1.0.0",
+  "description": "1. Clone repo into your github 2. Use https://expressjs.com/ 3. Use this library to connect to mysql https://sequelize.org/ 4. Integrate the following api into this project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "csv": "^6.1.3",
+    "csv-parse": "^5.2.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.0",
+    "stripe": "^9.9.0"
+  }
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+  </head>
+  <body style="margin: 4vw">
+    <h1 class="center" style="text-align: center">Airport country</h1>
+    <form
+      onsubmit="(e) => {console.log('Here');e.preventDefault();getWeather(e)}"
+    >
+      <div class="form-group">
+        <label for="targetCountry">Targe Country</label>
+        <input
+          type="text"
+          class="form-control country"
+          id="targetCountry"
+          aria-describedby="countryHelp"
+          placeholder="Enter country"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Get Weather</button>
+    </form>
+    <table style="width: 100%"></table>
+    <br />
+    <br />
+    <br />
+    <button class="btn btn-default">Book a flight</button>
+    <script>
+      $(".btn-default").on("click", (e) => {
+        console.log("Called");
+        location.assign("http://localhost:3000/book");
+      });
+      $("form").on("submit", getWeather);
+      async function getWeather(e) {
+        console.log("Called");
+        e.preventDefault();
+        console.log("Submit");
+        let headers = [
+          "temp_c",
+          "temp_f",
+          "wind_mph",
+          "wind_kph",
+          "wind_degree",
+          "wind_dir",
+          "pressure_mb",
+          "pressure_in",
+          "precip_mm",
+          "precip_in",
+          "humidity",
+          "cloud",
+          "feelslike_c",
+          "feelslike_f",
+          "vis_km",
+          "vis_miles",
+          "uv",
+          "gust_mph",
+          "gust_kph",
+        ];
+        let country = $(".country").val();
+        let data = await fetch(
+          `http://localhost:3000/currentweather?country=${country}`
+        );
+        $("table").html(`
+          <tr>
+            ${headers.map((head) => {
+              return `<th style="padding: 5px">${head}</th>`;
+            })}
+          </tr>
+        `);
+        let datum = (await data.json()).data;
+        console.log(datum);
+        $("table").append(`
+          <tr>
+            ${headers.map((head) => {
+              return `<td style="padding: 5px">${datum[head]}</td>`;
+            })}
+          </tr>
+        `);
+      }
+    </script>
+  </body>
+</html>

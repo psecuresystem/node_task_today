@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flight</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <style>
+      h5 {
+        width: 90%;
+        padding: 2vh;
+        margin: 3vh;
+        margin-bottom: 0vh;
+        margin-top: 0vh;
+        padding-bottom: 0vh;
+        padding-top: 0;
+      }
+      button {
+        align-self: center;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="center" style="text-align: center">Book flight</h1>
+    <h5>From</h5>
+    <select
+      class="select"
+      style="width: 90%; padding: 2vh; margin: 3vh; margin-top: 0.1vh"
+      aria-label=".form-select-lg example"
+    >
+      <option selected>From Country</option>
+    </select>
+    <h5>From Airport</h5>
+    <select
+      class="airports_from"
+      style="width: 90%; padding: 2vh; margin: 3vh; margin-top: 0.1vh"
+      aria-label=".form-select-lg example"
+    >
+      <option selected>From Airport</option>
+    </select>
+    <h5>To</h5>
+    <select
+      class="select2"
+      style="width: 90%; padding: 2vh; margin: 3vh; margin-top: 0.1vh"
+      aria-label=".form-select-lg example"
+    >
+      <option selected>To Country</option>
+    </select>
+    <h5>To Airport</h5>
+    <select
+      class="airports_to"
+      style="width: 90%; padding: 2vh; margin: 3vh; margin-top: 0.1vh"
+      aria-label=".form-select-lg example"
+    >
+      <option selected>To Airport</option>
+    </select>
+    <br />
+    <button class="btn btn-default bookFlight">Book a flight</button>
+    <script>
+      fetch("/allcountries")
+        .then((data) => data.json())
+        .then((data) => {
+          $(".select").append(`
+                    ${data.map(
+                      (datum) =>
+                        `<option value="${datum[1]}">${datum[0]}</option>`
+                    )}
+                `);
+          $(".select").on("change", (e) => {
+            fetch("/airports?country=" + $(e.target).val())
+              .then((data) => data.json())
+              .then((data) => {
+                let airports = data.data;
+                $(".airports_from").append(`
+                                    ${airports.map(
+                                      (airport) =>
+                                        `<option value="${airport.id}">${airport.name}</option>`
+                                    )}
+                                    `);
+              });
+          });
+
+          //To
+          $(".select2").append(`
+                    ${data.map(
+                      (datum) =>
+                        `<option value="${datum[1]}">${datum[0]}</option>`
+                    )}
+                `);
+          $(".select2").on("change", (e) => {
+            fetch("/airports?country=" + $(e.target).val())
+              .then((data) => data.json())
+              .then((data) => {
+                let airports = data.data;
+                $(".airports_to").append(`
+                                    ${airports.map(
+                                      ({ id, name }) =>
+                                        `<option value="${id}">${name}</option>`
+                                    )}
+                                    `);
+              });
+          });
+        });
+      $(".bookFlight").on("click", async () => {
+        let data = await (
+          await fetch("/travel", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: $(".airports_from").val(),
+              to: $(".airports_to").val(),
+            }),
+          })
+        ).json();
+        console.log(data);
+        location.assign(data.uri);
+      });
+    </script>
+  </body>
+</html>
